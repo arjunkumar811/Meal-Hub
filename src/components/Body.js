@@ -36,10 +36,10 @@ const fetchData = async () => {
 
     const TopResList = () => {
       const filterRes = listOfRes.filter(
-        (res) => res.data.avgRating > 4.3
+        (res) => res.info.avgRating > 4
       );
-
-      setlistOfRes(filterRes)
+      
+      setfilteredRes(filterRes);
     }
 
     const OnlineStatus = useOnlineStatus();
@@ -50,44 +50,62 @@ const fetchData = async () => {
     </h1>
       )
 
-    return listOfRes.length == 0 ? <Shimmer/> :  (
-      <div className="body">
-
-        <div className="flex">
-
-        <div className="m-4 p-4" > <input type="text" className="  border border-solid border-black" value={searchText} onChange={(e) => {
-setsearchText(e.target.value);
- }} placeholder ="Search here"/>
-<button className="px-4 py-1 border border-solid border-black bg-green-100 m-4 rounded-lg" onClick={() => {
-
- const FilteredRes = listOfRes.filter((res) => res.info.name.toLowerCase().includes(searchText.toLowerCase()));
- setfilteredRes(FilteredRes);
-
-}}>Search</button>
- </div >
-
-<div className="m-4 p-4 flex items-center" >
-<button className="px-4 py-2 bg-green-100 rounded-lg" 
-            onClick={TopResList}
-          >Top Retated </button>
+      return listOfRes.length === 0 ? (
+        <Shimmer />
+      ) : (
+        <div className="body">
+          <div className="flex">
+            <div className="m-4 p-4">
+              <input
+                type="text"
+                className="border border-solid border-black"
+                value={searchText}
+                onChange={(e) => {
+                  setsearchText(e.target.value);
+                }}
+                placeholder="Search here"
+              />
+              <button
+                className="px-4 py-1 border border-solid border-black bg-green-100 m-4 rounded-lg"
+                onClick={() => {
+                  const FilteredRes = listOfRes.filter((res) =>
+                    res.info.name.toLowerCase().includes(searchText.toLowerCase())
+                  );
+                  setfilteredRes(FilteredRes);
+                }}
+              >
+                Search
+              </button>
+            </div>
+      
+            <div className="m-4 p-4 flex items-center">
+              <button
+                className="px-4 py-2 bg-green-100 rounded-lg"
+                onClick={TopResList}
+              >
+                Top Rated
+              </button>
+            </div>
+          </div>
+      
+          <div className="res-container flex flex-wrap">
+            {filteredRes.length === 0 ? (
+              <p className="flex justify-center items-center">No restaurant found</p>
+            ) : (
+              filteredRes.map((restaurant, index) => (
+                <Rescards
+                  key={index}
+                  resData={{
+                    ...restaurant,
+                    info: { ...restaurant.info, avgRating: String(restaurant.info.avgRating) }
+                  }}
+                />
+              ))
+            )}
+          </div>
         </div>
-
-</div>
-          
-
-
-        <div className="res-container flex flex-wrap">
-   {filteredRes.map((restaurant, index) => (
-
-          <Rescards key={index} resData={restaurant} /> 
-          
-          
-
-          
-   ))}  
-        </div>
-      </div>
-    );
+      );
+      
   };
 
   
